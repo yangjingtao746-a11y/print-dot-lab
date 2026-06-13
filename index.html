@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Print Dot Lab</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main class="app">
+      <section class="toolbar" aria-label="参数面板">
+        <div class="brand">
+          <span class="mark" aria-hidden="true"></span>
+          <div>
+            <h1>Print Dot Lab</h1>
+            <p>照片转颗粒半调印刷图案工具</p>
+          </div>
+        </div>
+
+        <label class="dropzone" for="fileInput">
+          <input id="fileInput" type="file" accept="image/*">
+          <button id="clearImageBtn" class="clear-image" type="button" aria-label="移除当前图片" hidden>×</button>
+          <img id="uploadPreview" class="upload-preview" alt="已上传图片预览" hidden>
+          <span class="upload-icon" aria-hidden="true">+</span>
+          <strong>上传图片</strong>
+          <small id="uploadHint">也可以把图片拖到这里</small>
+        </label>
+
+        <div class="actions">
+          <button id="sampleBtn" type="button">生成示例图</button>
+          <button id="resetBtn" type="button">重置参数</button>
+        </div>
+
+        <div class="actions">
+          <button id="stashBtn" type="button" disabled>暂存当前</button>
+          <button id="compareBtn" type="button" disabled>对比暂存</button>
+        </div>
+
+        <button id="clearCacheBtn" type="button" disabled>清理缓存</button>
+
+        <div class="control-grid">
+          <label>
+            <span>黑色阈值 <output id="thresholdValue">142</output></span>
+            <input id="threshold" type="range" min="40" max="230" value="142">
+          </label>
+
+          <label>
+            <span>对比度 <output id="contrastValue">1.35</output></span>
+            <input id="contrast" type="range" min="0.6" max="2.6" value="1.35" step="0.05">
+          </label>
+
+          <label>
+            <span>随机破碎 <output id="noiseValue">22</output></span>
+            <input id="noise" type="range" min="0" max="70" value="22">
+          </label>
+
+          <label>
+            <span>边缘强度 <output id="edgeValue">64</output></span>
+            <input id="edge" type="range" min="0" max="160" value="64">
+          </label>
+
+          <label>
+            <span>去白底 <output id="bgValue">235</output></span>
+            <input id="bg" type="range" min="180" max="255" value="235">
+          </label>
+
+          <label>
+            <span>输出宽度 <output id="sizeValue">1200</output></span>
+            <input id="size" type="range" min="500" max="2400" value="1200" step="50">
+          </label>
+
+        </div>
+
+        <label class="toggle">
+          <input id="transparentOnly" type="checkbox" checked>
+          <span>导出透明背景</span>
+        </label>
+
+        <label class="toggle">
+          <input id="invertOutput" type="checkbox">
+          <span>黑白反转</span>
+        </label>
+
+        <fieldset class="option-box">
+          <legend>颗粒</legend>
+          <label>
+            <span>颗粒密度 <output id="grainValue">7</output></span>
+            <input id="grain" type="range" min="2" max="50" value="7">
+          </label>
+          <label>
+            <span>颗粒模式</span>
+            <select id="grainMode">
+              <option value="pixel">像素</option>
+              <option value="shape">形状</option>
+            </select>
+          </label>
+          <label>
+            <span>颗粒形状</span>
+            <select id="grainShape">
+              <option value="circle">圆形</option>
+              <option value="triangle">三角形</option>
+              <option value="heart">心形</option>
+              <option value="star">五角星形</option>
+              <option value="square">正方形</option>
+              <option value="rect">长方形</option>
+              <option value="cross">错号形</option>
+              <option value="text">内容形状</option>
+            </select>
+          </label>
+          <label>
+            <span>内容文字</span>
+            <textarea id="grainText" rows="3" maxlength="80">TEXT</textarea>
+          </label>
+          <label>
+            <span>文字描边 <output id="textStrokeValue">0</output></span>
+            <input id="textStroke" type="range" min="0" max="20" value="0" step="0.5">
+          </label>
+          <label class="file-row">
+            <span>字体文件</span>
+            <input id="grainFont" type="file" accept=".ttf,.otf,.woff,.woff2,font/*">
+            <small id="grainFontName">未导入字体</small>
+          </label>
+        </fieldset>
+
+        <fieldset class="option-box">
+          <legend>模糊预处理</legend>
+          <label class="toggle">
+            <input id="blurFirst" type="checkbox">
+            <span>启用模糊</span>
+          </label>
+          <label>
+            <span>模糊半径 <output id="blurValue">2</output></span>
+            <input id="blur" type="range" min="0" max="50" value="2" step="0.5">
+          </label>
+        </fieldset>
+
+        <fieldset class="option-box">
+          <legend>色相</legend>
+          <label class="toggle">
+            <input id="keepHue" type="checkbox">
+            <span>保留色相</span>
+          </label>
+          <label>
+            <span>色相调整 <output id="hueValue">0</output></span>
+            <input id="hue" type="range" min="-180" max="180" value="0">
+          </label>
+          <label>
+            <span>纯度调整 <output id="saturationValue">100</output></span>
+            <input id="saturation" type="range" min="0" max="200" value="100">
+          </label>
+          <label>
+            <span>明度调整 <output id="lightnessValue">24</output></span>
+            <input id="lightness" type="range" min="5" max="80" value="24">
+          </label>
+        </fieldset>
+
+        <div class="export-actions">
+          <button id="downloadBtn" class="primary" type="button" disabled>导出透明 PNG</button>
+          <button id="downloadSvgBtn" type="button" disabled>导出 SVG</button>
+        </div>
+      </section>
+
+      <aside class="stash-panel" aria-label="暂存项">
+        <div class="stash-head">
+          <strong>暂存</strong>
+          <span id="stashCount">0</span>
+        </div>
+        <div id="stashTray" class="stash-tray"></div>
+      </aside>
+
+      <section class="stage" aria-label="预览">
+        <div class="stage-top">
+          <div>
+            <h2>实时预览</h2>
+            <p id="status">先上传一张图片，或使用示例图。</p>
+          </div>
+          <span id="dimensionBadge">未载入</span>
+        </div>
+        <div class="canvas-shell">
+          <canvas id="preview" width="1200" height="1500" aria-label="处理结果预览"></canvas>
+        </div>
+      </section>
+
+      <section id="comparePanel" class="compare-panel" aria-label="暂存对比" hidden>
+        <div class="stage-top">
+          <div>
+            <h2>暂存对比</h2>
+            <p>选择需要下载的版本，或单独导出 PNG / SVG。</p>
+          </div>
+          <button id="closeCompareBtn" type="button">关闭对比</button>
+        </div>
+        <div id="compareGrid" class="compare-grid"></div>
+      </section>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
