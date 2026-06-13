@@ -26,8 +26,13 @@ const statusText = document.querySelector("#status");
 const dimensionBadge = document.querySelector("#dimensionBadge");
 const stashTray = document.querySelector("#stashTray");
 const stashCount = document.querySelector("#stashCount");
+const stashPanel = document.querySelector(".stash-panel");
+const stashBookmark = document.querySelector("#stashBookmark");
 const comparePanel = document.querySelector("#comparePanel");
 const compareGrid = document.querySelector("#compareGrid");
+const zoomModal = document.querySelector("#zoomModal");
+const zoomImage = document.querySelector("#zoomImage");
+const closeZoomBtn = document.querySelector("#closeZoomBtn");
 
 const controls = {
   threshold: document.querySelector("#threshold"),
@@ -665,6 +670,17 @@ function toggleLikeStashItem(id) {
   openCompare();
 }
 
+function openZoom(item) {
+  zoomImage.src = item.dataUrl;
+  zoomImage.alt = `${item.name} 放大预览`;
+  zoomModal.hidden = false;
+}
+
+function closeZoom() {
+  zoomModal.hidden = true;
+  zoomImage.removeAttribute("src");
+}
+
 async function loadGrainFont(file) {
   if (!file) return;
 
@@ -745,6 +761,11 @@ function openCompare() {
       if (event.target.closest("button")) return;
       selectedStashId = Number(card.dataset.id);
       openCompare();
+    });
+    card.addEventListener("dblclick", (event) => {
+      if (event.target.closest("button")) return;
+      const item = stashItems.find((entry) => entry.id === Number(card.dataset.id));
+      if (item) openZoom(item);
     });
   });
 
@@ -925,6 +946,21 @@ compareBtn.addEventListener("click", openCompare);
 clearCacheBtn.addEventListener("click", clearCache);
 closeCompareBtn.addEventListener("click", () => {
   comparePanel.hidden = true;
+});
+stashPanel.addEventListener("click", (event) => {
+  if (event.target.closest(".stash-item") || event.target.closest(".stash-bookmark")) return;
+  stashPanel.classList.add("is-collapsed");
+});
+stashBookmark.addEventListener("click", (event) => {
+  event.stopPropagation();
+  stashPanel.classList.remove("is-collapsed");
+});
+closeZoomBtn.addEventListener("click", closeZoom);
+zoomModal.addEventListener("click", (event) => {
+  if (event.target === zoomModal) closeZoom();
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !zoomModal.hidden) closeZoom();
 });
 resetBtn.addEventListener("click", resetControls);
 sampleBtn.addEventListener("click", createSample);

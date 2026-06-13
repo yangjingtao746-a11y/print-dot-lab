@@ -166,6 +166,7 @@
           <span id="stashCount">0</span>
         </div>
         <div id="stashTray" class="stash-tray"></div>
+        <button id="stashBookmark" class="stash-bookmark" type="button" aria-label="展开暂存">暂存</button>
       </aside>
 
       <section class="stage" aria-label="预览">
@@ -191,6 +192,11 @@
         </div>
         <div id="compareGrid" class="compare-grid"></div>
       </section>
+
+      <div id="zoomModal" class="zoom-modal" hidden>
+        <button id="closeZoomBtn" class="zoom-close" type="button" aria-label="关闭放大预览">×</button>
+        <img id="zoomImage" alt="放大预览">
+      </div>
     </main>
 
     <script src="./script.js"></script>
